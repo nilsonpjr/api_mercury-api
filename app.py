@@ -2,11 +2,12 @@
 # from lib2to3.pytree import Base
 # from fastapi import FastAPI
 from flask import Flask
-from pydantic import BaseModel
+# from pydantic import BaseModel
 # import uvicorn
 import biblioteca
 import funcoes
 import json
+import os 
 
 app = Flask(__name__)
 
@@ -63,6 +64,7 @@ def get_garantia(nromotor):
 #     base_de_dados.append(usuario)
 #     return usuario
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
+    # port = int(os.getenv('PORT'), '80')
     app.run(debug=True)
     
