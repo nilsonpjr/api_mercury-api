@@ -1,19 +1,21 @@
 # from asyncore import dispatcher
+# import webbrowser
 from importlib.metadata import entry_points
 from lib2to3.pgen2.token import EQUAL
 from pickle import FALSE
+from time import sleep
+import bs4
+from bs4 import BeautifulSoup
 from matplotlib.pyplot import text
 from pyparsing import null_debug_action
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from time import sleep
-import bs4
-import webbrowser
-from bs4 import BeautifulSoup
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
+
 
 def conecta_login():
     login = 31240
@@ -25,7 +27,9 @@ def conecta_login():
     options.add_argument('window-size=200,400')
 
     # Abre o Navegador e Entra no Site
-    navegador = webdriver.Chrome(chrome_options=options)
+    navegador = webdriver.Chrome(
+        chrome_options=options, service=Service(ChromeDriverManager().install()))
+    # navegador = webdriver.Chrome(chrome_options=options)
     navegador.get("https://portal.mercurymarine.com.br/epdv/epdv001.asp")
     # Insere o login e Senha
     navegador.find_element(
@@ -77,15 +81,15 @@ def ConsultaGarantia(nro_motor):
         vld_garantia = navegador.find_element(
             By.XPATH, '/html/body/table/tbody/tr/td/table[2]/tbody/tr[3]/td[6]').text
         nome_cli = dados_cliente(nro_motor)
-        print(nro_serie)
+        # print(nro_serie)
         modelo = modelo.replace("\n", '')
-        print(modelo)
-        print(dt_venda)
-        print(status_garantia)
-        print(vld_garantia)
+        # print(modelo)
+        # print(dt_venda)
+        # print(status_garantia)
+        # print(vld_garantia)
         nome_cli = str(nome_cli)
         nome_cli = nome_cli.replace("NOME ", "")
-        print(str(nome_cli))
+        # print(str(nome_cli))
         dados_pesq = dict()
         for i in range(6):
             dados_pesq = {
@@ -97,5 +101,5 @@ def ConsultaGarantia(nro_motor):
                 'vld_garantia': vld_garantia,
                 'nome_cli': nome_cli,
             }
-        print(dados_pesq)
+        # print(dados_pesq)
         return dados_pesq
