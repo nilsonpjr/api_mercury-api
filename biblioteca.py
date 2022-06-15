@@ -15,7 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
-
+import os
 
 def conecta_login():
     login = 31240
@@ -24,11 +24,14 @@ def conecta_login():
     options = Options()
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
-    options.add_argument('window-size=200,400')
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    navegador = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=options)
 
     # Abre o Navegador e Entra no Site
-    navegador = webdriver.Chrome(
-        chrome_options=options, service=Service(ChromeDriverManager().install()))
+    # navegador = webdriver.Chrome(
+        # chrome_options=options, service=Service(ChromeDriverManager().install()))
     # navegador = webdriver.Chrome(chrome_options=options)
     navegador.get("https://portal.mercurymarine.com.br/epdv/epdv001.asp")
     # Insere o login e Senha
