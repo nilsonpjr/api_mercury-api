@@ -7,10 +7,9 @@ from pydantic import BaseModel
 import biblioteca
 import funcoes
 import json
-from flask_cors import CORS
+
 app = Flask(__name__)
 
-CORS(app)
 
 # Rota Raiz
 
