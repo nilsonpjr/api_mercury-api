@@ -7,13 +7,14 @@ from pydantic import BaseModel
 import biblioteca
 import funcoes
 import json
-
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 
-
 # Rota Raiz
+CORS(app)
 
 
+@cross_origin
 @app.route("/")
 def raiz():
     return "<h1>Olá : Mundo</h1>"
