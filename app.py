@@ -11,10 +11,10 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 
 # Rota Raiz
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://app-mercuryapi.herokuapp.com/"}})
 
 
-@cross_origin
+# @cross_origin
 @app.route("/")
 def raiz():
     return "<h1>Olá : Mundo</h1>"
@@ -41,6 +41,7 @@ def get_pesq_preco(item):
     dicionario = funcoes.pesqpreco(item)
     return json.dumps(dicionario)
 
+
 @app.route("/garantia/<nromotor>")
 def get_garantia(nromotor):
     dicionario = biblioteca.ConsultaGarantia(nromotor)
@@ -65,6 +66,5 @@ def get_garantia(nromotor):
 #     base_de_dados.append(usuario)
 #     return usuario
 
-if __name__ == "__main__":  
+if __name__ == "__main__":
     app.run(debug=True)
-    
