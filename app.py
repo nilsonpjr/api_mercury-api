@@ -11,8 +11,8 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 
 # Rota Raiz
-CORS(app, resources={r"/*": {"origins": "https://app-mercuryapi.herokuapp.com"}})
-
+CORS(app, resources={r"/preco/*": {"origins": "https://app-mercuryapi.herokuapp.com"}})
+CORS(app, resources={r"/garantia/*": {"origins": "https://app-mercuryapi.herokuapp.com"}})
 
 # @cross_origin
 @app.route("/")
