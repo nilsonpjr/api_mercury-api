@@ -1,0 +1,9 @@
+Buildpacks
+Buildpacks are scripts that are run when your app is deployed. They are used to install dependencies for your app and configure your environment. Find new buildpacks on Heroku Elements
+Add buildpack
+
+heroku/python
+
+https://github.com/heroku/heroku-buildpack-google-chrome
+
+https://github.com/heroku/heroku-buildpack-chromedriver
