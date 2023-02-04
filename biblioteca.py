@@ -1,5 +1,3 @@
-# from asyncore import dispatcher
-# import webbrowser
 from importlib.metadata import entry_points
 from lib2to3.pgen2.token import EQUAL
 from pickle import FALSE

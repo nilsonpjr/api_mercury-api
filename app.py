@@ -1,14 +1,8 @@
-# from email.mime import base
-# from lib2to3.pytree import Base
-# from fastapi import FastAPI
 from flask import Flask
-# from pydantic import BaseModel
-# import uvicorn
 import biblioteca
 import funcoes
 import json
 from flask_cors import CORS, cross_origin
-
 
 app = Flask(__name__)
 
@@ -16,9 +10,12 @@ app = Flask(__name__)
 # CORS(app, resources={r"/preco/*": {"origins": "*"}})
 # CORS(app, resources={r"/garantia/*": {"origins": "*"}})
 CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 @cross_origin
 @app.route("/")
 # @cross_origin
+
+
 def raiz():
     return "<h1>Olá : Mundo</h1>"
 
