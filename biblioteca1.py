@@ -1,0 +1,89 @@
+from importlib.metadata import entry_points
+from lib2to3.pgen2.token import EQUAL
+from pickle import FALSE
+from time import sleep
+import bs4
+from bs4 import BeautifulSoup
+from matplotlib.pyplot import text
+from pyparsing import null_debug_action
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+import os
+import pandas as pd
+
+def cria_navegador():
+    options = Options()
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    navegador = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=options)
+    return navegador
+
+def conecta_login():
+    login = 31240
+    senha = "2105_kasa"
+    # item = "impeller"
+    navegador = cria_navegador()
+    # Abre o Navegador e Entra no Site
+    navegador.get("https://portal.mercurymarine.com.br/epdv/epdv001.asp")
+    # Insere o login e Senha
+    xpath_login = '/html/body/center/form/table/tbody/tr/td/table[2]/tbody/tr[2]/td[2]/input'
+    xpath_senha = '/html/body/center/form/table/tbody/tr/td/table[2]/tbody/tr[3]/td[2]/input'
+    xpath_entrar = '/html/body/center/form/table/tbody/tr/td/table[2]/tbody/tr[4]/td/input'
+    navegador.find_element(By.XPATH, xpath_login).send_keys(login)
+    navegador.find_element(By.XPATH, xpath_senha).send_keys(senha)
+    navegador.find_element(By.XPATH, xpath_entrar).send_keys(Keys.ENTER)
+    return navegador
+
+
+def dados_cliente(nro_motor):
+    navegador = conecta_login()
+    navegador.get(
+        "https://portal.mercurymarine.com.br/epdv/ewr010c.asp?s_nr_serie=" + nro_motor)
+    sleep(4)
+    navegador.switch_to.window(navegador.window_handles[0])
+    sleep(4)
+    nome_cli = navegador.find_element(
+        By.XPATH, '//*[@id="warranty_clients"]/table/tbody/tr/td/table[2]/tbody/tr[3]')
+    nome_cli = nome_cli.get_attribute("value")
+    nome_cli = nome_cli.upper()
+    return nome_cli
+
+
+def ConsultaGarantia(nro_motor):
+    navegador = conecta_login()
+    navegador.get(
+        "https://portal.mercurymarine.com.br/epdv/ewr010.asp?s_nr_serie=" + nro_motor)
+    sleep(5)
+    navegador.switch_to.window(navegador.window_handles[0])
+    sleep(5)
+    teste = navegador.find_element(
+        By.XPATH, '/html/body/table/tbody/tr/td/table[1]/tbody/tr/td[2]/strong/font')
+    teste = teste.get_attribute("value")
+    nro_motor = nro_motor.upper()
+    """Verifica se o termo digitado esta correto ou foi encontrado"""
+    if str(teste) != str(nro_motor):
+        print('Nenhum Motor encontrado para esse número de série!')
+        return '<h1> Nenhum Motor encontrado para esse numero de serie!</h1>'
+    else:
+        print('Sucesso! Motor encontrado')
+        dados = ['nro_serie', 'modelo', 'dt_venda', 'status_garantia', 'vld_garantia']
+        valores = []
+        for dado in dados:
+            xpath_dado = f'//*[@id="{dado}_1"]'
+            valor = navegador.find_element(By.XPATH, xpath_dado).get_attribute("value")
+            valores.append(valor)
+        nome_cli = dados_cliente(nro_motor)
+        valores.append(nome_cli)
+        colunas = ['nro_motor', 'nro_serie', 'modelo', 'dt_venda', 'status_garantia', 'vld_garantia', 'nome_cli']
+        df = pd.DataFrame([valores], columns=colunas)
+        df.to_csv("dados_garantia.csv", index=False)
+        navegador.quit()
+        return df
